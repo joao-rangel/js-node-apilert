@@ -1,5 +1,6 @@
 import { createServer } from 'http';
 import { parse } from 'url';
+import { StringDecoder } from 'string_decoder';
 
 const server = createServer((request, response) => {
   const parsedUrl = parse(request.url, true);
@@ -18,9 +19,19 @@ const server = createServer((request, response) => {
 
   const headers = request.headers;
 
-  response.end('Hello World');
+  const decoder = new StringDecoder('utf-8');
+  let buffer = '';
 
-  console.log(`Request received with these headers: ${JSON.stringify(headers)}`);
+  request.on('data', (data) => {
+    buffer += decoder.write(data);
+  })
+
+  request.on('end', () => {
+    buffer += decoder.end();
+
+    response.end('Hello World');
+    console.log(`Request received with this payload: ${buffer}`);
+  })
 });
 
 const PORT = 3000;
