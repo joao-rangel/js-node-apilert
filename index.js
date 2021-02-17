@@ -2,8 +2,8 @@ import { createServer } from 'http';
 import { parse } from 'url';
 import { StringDecoder } from 'string_decoder';
 
+import config from './config.js';
 import { handlers, router } from './router.js';
-import { stat } from 'fs';
 
 const server = createServer((request, response) => {
   const parsedUrl = parse(request.url, true);
@@ -57,8 +57,6 @@ const server = createServer((request, response) => {
   })
 });
 
-const PORT = 3000;
-
-server.listen(PORT, () => {
-  console.log(`The server started on port ${PORT}`);
+server.listen(config.port, () => {
+  console.log(`Server started on port: ${config.port} at environment: ${config.envName}`);
 });
