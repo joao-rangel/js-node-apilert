@@ -2,6 +2,9 @@ import { createServer } from 'http';
 import { parse } from 'url';
 import { StringDecoder } from 'string_decoder';
 
+import { handlers, router } from './router.js';
+import { stat } from 'fs';
+
 const server = createServer((request, response) => {
   const parsedUrl = parse(request.url, true);
 
@@ -27,7 +30,28 @@ const server = createServer((request, response) => {
   request.on('end', () => {
     buffer += decoder.end();
 
-    response.end('Hello World');
+    const chosenHandler = router[trimmedPath] || handlers.notFound;
+
+    const requestData = {
+      trimmedPath,
+      queryStringObject,
+      method,
+      headers,
+      payload: buffer
+    }
+
+    chosenHandler(requestData, (statusCode, payload) => {
+      statusCode = (typeof statusCode === 'number') ? statusCode : 200;
+      payload = (typeof payload === 'object') ? payload : {};
+
+      const payloadString = JSON.stringify(payload);
+
+      response.writeHead(statusCode);
+      response.end(payloadString);
+
+      console.log('Returning this response: ', statusCode, payloadString);
+    })
+
     console.log(`Request received with this payload: ${buffer}`);
   })
 });
