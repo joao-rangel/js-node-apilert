@@ -16,11 +16,11 @@ const server = createServer((request, response) => {
 
   const queryStringObject = parsedUrl.query;
 
+  const headers = request.headers;
+
   response.end('Hello World');
 
-  console.log(`Request received on path: ${trimmedPath}`);
-  console.log(`Request. received method: ${method}`);
-  console.log(`Req. query string parameters: ${JSON.stringify(queryStringObject)}`);
+  console.log(`Request received with these headers: ${JSON.stringify(headers)}`);
 });
 
 const PORT = 3000;
