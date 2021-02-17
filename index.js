@@ -14,11 +14,13 @@ const server = createServer((request, response) => {
 
   const method = request.method.toUpperCase();
 
+  const queryStringObject = parsedUrl.query;
 
   response.end('Hello World');
 
   console.log(`Request received on path: ${trimmedPath}`);
-  console.log(`Req. received method: ${method}`);
+  console.log(`Request. received method: ${method}`);
+  console.log(`Req. query string parameters: ${JSON.stringify(queryStringObject)}`);
 });
 
 const PORT = 3000;
