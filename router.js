@@ -1,7 +1,7 @@
 export const handlers = {};
 
-handlers.sample = (data, callback) => {
-  callback(406, { name: 'sample handler' });
+handlers.ping = (data, callback) => {
+  callback(204);
 }
 
 handlers.notFound = (data, callback) => {
@@ -9,5 +9,5 @@ handlers.notFound = (data, callback) => {
 }
 
 export const router = {
-  sample: handlers.sample
+  ping: handlers.ping
 }
