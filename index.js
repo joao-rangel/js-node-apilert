@@ -1,11 +1,32 @@
-import { createServer } from 'http';
+import { createServer as createHttpServer } from 'http';
+import { createServer as createHttpsServer } from 'https';
 import { parse } from 'url';
 import { StringDecoder } from 'string_decoder';
+import fs from 'fs';
 
 import config from './config.js';
 import { handlers, router } from './router.js';
 
-const server = createServer((request, response) => {
+const httpServer = createHttpServer((request, response) => {
+  unifiedServer(request, response);
+});
+httpServer.listen(config.httpPort, () => {
+  console.log(`Server started on port: ${config.httpPort}`);
+});
+
+const httpsServer = createHttpsServer((request, response) => {
+  unifiedServer(request, response);
+});
+const httpsServerOptions = {
+  key: fs.readFileSync('./https/key.pem'),
+  cert: fs.readFileSync('./https/cert.pem'),
+  port: config.httpsPort
+};
+httpsServer.listen(httpsServerOptions, config.httpsPort, () => {
+  console.log(`Server started on port: ${config.httpsPort}`);
+});
+
+const unifiedServer = (request, response) => {
   const parsedUrl = parse(request.url, true);
 
   const path = parsedUrl.pathname;
@@ -55,8 +76,4 @@ const server = createServer((request, response) => {
 
     console.log(`Request received with this payload: ${buffer}`);
   })
-});
-
-server.listen(config.port, () => {
-  console.log(`Server started on port: ${config.port} at environment: ${config.envName}`);
-});
+}
