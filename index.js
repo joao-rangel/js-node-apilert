@@ -6,6 +6,11 @@ import fs from 'fs';
 
 import config from './config.js';
 import { handlers, router } from './router.js';
+import { lib } from './lib/data.js';
+
+lib.create('test', 'newFile', { test: 'Hello test!' }, (err) => {
+  console.log(`Error: ${err}`); // TODO remove after test
+})
 
 const httpServer = createHttpServer((request, response) => {
   unifiedServer(request, response);
